@@ -108,20 +108,6 @@ namespace SecretSantaApp.Business
             return participantsWithoutCurrentParticipantExcludedOne;
         } 
 
-        private void RemoveAlreadyAttributedParticipants(Participant currentParticipant, IEnumerable<Participant> participants, Participant nominee)
-        {
-            foreach(var participant in participants)
-            {
-                if (!participant.Equals(currentParticipant) && participant.PotentialNominees.Count() > 1)
-                {
-                    if (participant.PotentialNominees.Any(n => n.Equals(nominee)))
-                    {
-                        participant.PotentialNominees.Remove(nominee);
-                    }
-                }
-            }
-        } 
-
         private IEnumerable<Participant> RemovePotentialNomineesFromSameTeam(Participant currentParticipant)
         {
             var potentialNomineesNotInSameTeam = new List<Participant>();
