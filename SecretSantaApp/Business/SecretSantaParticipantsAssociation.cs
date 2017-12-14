@@ -10,36 +10,6 @@ namespace SecretSantaApp.Business
         public IDictionary<Participant, People> AssociateParticipantsTogether(IEnumerable<Participant> participants)
         {
             var secretSantaSelection = new Dictionary<Participant, People>();
-            var alreadyAttributedParticipants = new List<Participant>();
-            
-            // Choose every potential persones to gift for each gifter
-            foreach(var gifter in participants)
-            {
-                GetPotentialNomineeForAParticipant(participants, gifter);
-            }
-            //
-
-            foreach(var participant in participants)
-            {
-                var potentialNomineesNotInSameTeam = RemovePotentialNomineesFromSameTeam(participant);
-                var potentialNominees = participant.PotentialNominees;
-                var rand = new Random();
-
-                var nominee = potentialNomineesNotInSameTeam.Any() 
-                            ? (potentialNomineesNotInSameTeam.ToArray())[rand.Next(potentialNomineesNotInSameTeam.Count()-1)] 
-                            : (potentialNominees.ToArray())[rand.Next(potentialNominees.Count()-1)];
-
-                secretSantaSelection.Add(participant, nominee);
-                alreadyAttributedParticipants.Add(nominee);
-                RemoveAlreadyAttributedParticipants(participant, participants, nominee);
-            }
-
-            return secretSantaSelection;
-        }
-
-        public IDictionary<Participant, People> AssociateParticipantsTogetherV2(IEnumerable<Participant> participants)
-        {
-            var secretSantaSelection = new Dictionary<Participant, People>();
             var potentialNominees = participants.ToList();
             var gifters = participants.ToList();
 
