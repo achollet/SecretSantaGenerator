@@ -10,19 +10,44 @@ namespace SecretSantaApp.Business
         public IDictionary<Participant, People> AssociateParticipantsTogether(IEnumerable<Participant> participants)
         {
             var secretSantaSelection = new Dictionary<Participant, People>();
-            var alreadyAttibutedParticipants = new List<Participant>();
-            // Choose one persone to gift for each gifter
-            foreach(var gifter in participants)
+            var potentialNominees = participants.ToList();
+            var gifters = participants.ToList();
+
+            while(potentialNominees.Any() && gifters.Any())
             {
-                var potentialGifted = GetPotentialNomineeForAParticipant(participants, alreadyAttibutedParticipants, gifter);
+                var randomIndexForGifter = new Random().Next(gifters.Count);
+                var selectedGifter = gifters.ElementAt(randomIndexForGifter);
 
-                var randomIndex = new Random().Next(potentialGifted.Length);
+                var potentialNomineesForSelectedGifter = RemoveCurrentParticipantFromPotentialGifted(potentialNominees, selectedGifter);
+                var potentialNomineesNotExcluded = RemoveParticipantsInCurrentParticipantExclusionList(potentialNomineesForSelectedGifter, selectedGifter).ToList();
+                var potentialNomineesNotInSameTeam = RemovePotentialNomineesFromSelectedGifterTeam(potentialNomineesNotExcluded, selectedGifter).ToList();
 
-                var gifted = new People{ FirstName = potentialGifted[randomIndex].FirstName, LastName = potentialGifted[randomIndex].LastName};
+                var nominee = new Participant();
 
-                secretSantaSelection.Add(gifter, gifted);
-                alreadyAttibutedParticipants.Add(potentialGifted[randomIndex]);
-            }
+                if (!potentialNomineesNotInSameTeam.Any())
+                {
+                    var randomNomineeIndex = new Random().Next(potentialNomineesNotExcluded.Count);
+                    nominee = potentialNomineesNotExcluded.ElementAt(randomNomineeIndex);
+                }
+
+                if (potentialNomineesNotInSameTeam.Count == 1)
+                {
+                    nominee = potentialNomineesNotInSameTeam.FirstOrDefault();
+                }
+                else
+                {
+                    var randomNomineeIndex = new Random().Next(potentialNomineesNotInSameTeam.Count);
+                    nominee = potentialNomineesNotInSameTeam.ElementAt(randomNomineeIndex);
+                }
+                
+                if (nominee != null)
+                {
+                    secretSantaSelection.Add(selectedGifter, nominee as People);
+                    gifters.Remove(selectedGifter);
+                    potentialNominees.Remove(nominee);
+                }
+            } 
+
             return secretSantaSelection;
         }
 
@@ -42,24 +67,11 @@ namespace SecretSantaApp.Business
             return cleanParticipantsList;
         }
 
-        private Participant[] GetPotentialNomineeForAParticipant(IEnumerable<Participant> participants, IEnumerable<Participant> participantsAlreadyAttributed,Participant currentParticipant)
+        private void GetPotentialNomineeForAParticipant(IEnumerable<Participant> participants, Participant currentParticipant)
         {
             var participantsExceptCurrentParticipant = RemoveCurrentParticipantFromPotentialGifted(participants, currentParticipant);
             
-            var participantsNotAlreadyAttributed = participantsExceptCurrentParticipant.Except(participantsAlreadyAttributed);
-
-            var participantsNotExcluded = RemoveParticipantsInCurrentParticipantExclusionList(participantsNotAlreadyAttributed, currentParticipant);
-
-            var participantsNotInTheCurrentOneTeam = ExcludedParticipantFromSameTeam(participantsNotExcluded, currentParticipant);
-
-            if (participantsNotInTheCurrentOneTeam.Any())
-            {
-                return participantsNotInTheCurrentOneTeam.ToArray();
-            }
-            else 
-            {
-                return participantsNotExcluded.ToArray();
-            }
+            currentParticipant.PotentialNominees = RemoveParticipantsInCurrentParticipantExclusionList(participantsExceptCurrentParticipant, currentParticipant);
         }
 
         private IEnumerable<Participant> RemoveCurrentParticipantFromPotentialGifted(IEnumerable<Participant> participants, Participant currentParticipant)
@@ -77,17 +89,17 @@ namespace SecretSantaApp.Business
             return participantsExceptCurrentOne;
         }
 
-        private IEnumerable<Participant> RemoveParticipantsInCurrentParticipantExclusionList(IEnumerable<Participant> participants, Participant currentParticipant)
+        private List<Participant> RemoveParticipantsInCurrentParticipantExclusionList(IEnumerable<Participant> participants, Participant currentParticipant)
         {
-            if (currentParticipant.ExcludedNominee == null || !currentParticipant.ExcludedNominee.Any())
+            if (currentParticipant.ExcludedNominees == null || !currentParticipant.ExcludedNominees.Any())
             {
-                return participants;
+                return participants.ToList();
             }
 
             var participantsWithoutCurrentParticipantExcludedOne = new List<Participant>();
             foreach(var participant in participants)
             {
-                if (!currentParticipant.ExcludedNominee.Any(n => n.FirstName == participant.FirstName && 
+                if (!currentParticipant.ExcludedNominees.Any(n => n.FirstName == participant.FirstName && 
                                                                  n.LastName == participant.LastName))
                 {
                     participantsWithoutCurrentParticipantExcludedOne.Add(participant);
@@ -96,10 +108,33 @@ namespace SecretSantaApp.Business
             return participantsWithoutCurrentParticipantExcludedOne;
         } 
 
-        private IEnumerable<Participant> ExcludedParticipantFromSameTeam(IEnumerable<Participant> potentialNominees, Participant gifter)
+        private IEnumerable<Participant> RemovePotentialNomineesFromSameTeam(Participant currentParticipant)
         {
-            var potentialGifted = potentialNominees.Where( pn => pn != gifter && pn.Team != gifter.Team);
-            return potentialGifted;
-        } 
+            var potentialNomineesNotInSameTeam = new List<Participant>();
+
+            foreach(var nominee in currentParticipant.PotentialNominees)
+            {
+                if (nominee.Team != currentParticipant.Team)
+                {
+                    potentialNomineesNotInSameTeam.Add(nominee);
+                }
+            }
+
+            return potentialNomineesNotInSameTeam;
+        }
+
+        private IEnumerable<Participant> RemovePotentialNomineesFromSelectedGifterTeam(IEnumerable<Participant> participants, Participant currentParticipant)
+        {
+            var participantsNotInTeam = new List<Participant>();
+            
+            foreach(var participant in participants)
+            {
+                if (!currentParticipant.Equals(participant) && participant.Team != currentParticipant.Team)
+                {
+                    participantsNotInTeam.Add(participant);
+                }
+            }
+            return participantsNotInTeam;
+        }
     }
 }
