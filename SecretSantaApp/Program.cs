@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using SecretSantaApp.Model;
 using SecretSantaApp.Business;
+using System.Net.Mail;
+using System.Net;
 
 namespace SecretSantaApp
 {
@@ -13,8 +15,8 @@ namespace SecretSantaApp
             var secretSantaPaticipantsAssociation = new SecretSantaPaticipantsAssociation();
             
             //TODO : Retrieve the configuration and the list of participants from a .json file
-            var path = @"./SecretSanta.json"; 
-            var json = new JsonFileLoader().GetDataFromFile(path);
+            //var path = @"./SecretSanta.json"; 
+            //var json = new JsonFileLoader().GetDataFromFile(path);
 
             var config = new Configuration
             {
@@ -34,20 +36,25 @@ namespace SecretSantaApp
             var gifters  = secretSantaPaticipantsAssociation.RemoveDuplicateParticipants(participants);
             var secretSantaSelection = secretSantaPaticipantsAssociation.AssociateParticipantsTogether(gifters);
             
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("Associtation gifter-gifted terminated");
-            Console.WriteLine("-------------------------------------");
+            // Email part
 
-            foreach(var gifterGiftedPair in secretSantaSelection)
+            var smtpClient = new SmtpClient(config.SmtpServer);
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(config.EmailUserName, config.EmailPassword);
+
+            foreach(var gifterGifted in secretSantaSelection)
             {
-                Console.WriteLine(String.Format("{0} {1} offers a gift to {2} {3} of a maximum value of {4}", gifterGiftedPair.Key.FirstName, gifterGiftedPair.Key.LastName, gifterGiftedPair.Value.FirstName, gifterGiftedPair.Value.LastName, config.MaxAmount));
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(config.EmailAddress),
+                    Subject = config.EmailSubject,
+                    Body = String.Format(config.EmailBody, gifterGifted.Value.FirstName, gifterGifted.Value.LastName, config.MaxAmount) 
+                };
+                mailMessage.To.Add(gifterGifted.Key.EmailAddress);
+
+                //smtpClient.Send(mailMessage);
             }
 
-            //var path = @"./SecretSanta.json"; 
-            
-            //var json = new JsonFileLoader().GetDataFromFile(path);
-
-            //var config = JsonConvert.DeserializeObject<Configuration>(json);
             Console.ReadLine();
         }
     }
