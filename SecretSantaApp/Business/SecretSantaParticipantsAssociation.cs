@@ -26,18 +26,27 @@ namespace SecretSantaApp.Business
 
                 if (!potentialNomineesNotInSameTeam.Any())
                 {
-                    var randomNomineeIndex = new Random().Next(potentialNomineesNotExcluded.Count);
-                    nominee = potentialNomineesNotExcluded.ElementAt(randomNomineeIndex);
+                    if (potentialNomineesNotExcluded.Count == 1)
+                    {
+                        nominee = potentialNomineesNotExcluded.FirstOrDefault();
+                    }
+                    else 
+                    {
+                        var randomNomineeIndex = new Random().Next(potentialNomineesNotExcluded.Count);
+                        nominee = potentialNomineesNotExcluded.ElementAt(randomNomineeIndex);
+                    }
                 }
-
-                if (potentialNomineesNotInSameTeam.Count == 1)
+                else 
                 {
-                    nominee = potentialNomineesNotInSameTeam.FirstOrDefault();
-                }
-                else
-                {
-                    var randomNomineeIndex = new Random().Next(potentialNomineesNotInSameTeam.Count);
-                    nominee = potentialNomineesNotInSameTeam.ElementAt(randomNomineeIndex);
+                    if (potentialNomineesNotInSameTeam.Count == 1)
+                    {
+                        nominee = potentialNomineesNotInSameTeam.FirstOrDefault();
+                    }
+                    else
+                    {
+                        var randomNomineeIndex = new Random().Next(potentialNomineesNotInSameTeam.Count);
+                        nominee = potentialNomineesNotInSameTeam.ElementAt(randomNomineeIndex);
+                    }
                 }
                 
                 if (nominee != null)

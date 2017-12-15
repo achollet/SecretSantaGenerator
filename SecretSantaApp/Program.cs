@@ -13,7 +13,7 @@ namespace SecretSantaApp
         static void Main(string[] args)
         {
             var secretSantaPaticipantsAssociation = new SecretSantaPaticipantsAssociation();
-            
+            var secretSantaEmailBuilder = new SecretSantaEmailBuilder();
             //TODO : Retrieve the configuration and the list of participants from a .json file
             //var path = @"./SecretSanta.json"; 
             //var json = new JsonFileLoader().GetDataFromFile(path);
@@ -21,7 +21,15 @@ namespace SecretSantaApp
             var config = new Configuration
             {
                 MaxAmount = 10,
-                EmailAddress = "SecretSantaCheckout@gmail.com"
+                DeliveryDate = "21 Janvier 2018",
+                EmailSettings = new EmailSettings{
+                    SmtpServer = "smtpserver",
+                    EmailUserName = "username",
+                    EmailPassword = "password",
+                    EmailAddress ="SecretSantaCheckout@gmail.com", 
+                    EmailSubject = "Secret Santa du Checkout",
+                    EmailBody = "Tu es le Secret Santa de <b>{0} </b>.\n Le cadeau que tu lui offriras ne doit pas dépasser une valeur de <b>{1}\u20AC</b> (frais de port non-inclus).\n La remise du cadeau se fera le <b>{2}</b>. \n\n Oh oh oh! \n Joyeux Noël!"
+                }
             };
 
             var participants = new List<Participant>
@@ -37,24 +45,8 @@ namespace SecretSantaApp
             var secretSantaSelection = secretSantaPaticipantsAssociation.AssociateParticipantsTogether(gifters);
             
             // Email part
-
-            var smtpClient = new SmtpClient(config.SmtpServer);
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(config.EmailUserName, config.EmailPassword);
-
-            foreach(var gifterGifted in secretSantaSelection)
-            {
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress(config.EmailAddress),
-                    Subject = config.EmailSubject,
-                    Body = String.Format(config.EmailBody, gifterGifted.Value.FirstName, gifterGifted.Value.LastName, config.MaxAmount) 
-                };
-                mailMessage.To.Add(gifterGifted.Key.EmailAddress);
-
-                //smtpClient.Send(mailMessage);
-            }
-
+            secretSantaEmailBuilder.BuildAndSendEmail(config, secretSantaSelection);
+            
             Console.ReadLine();
         }
     }
