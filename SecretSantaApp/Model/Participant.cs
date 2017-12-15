@@ -5,8 +5,7 @@ namespace SecretSantaApp.Model
     public class Participant : People
     {
         public string EmailAddress { get; set; }
-        public int Team { get; set; }
-        public List<Participant> PotentialNominees { get; set; }
+        public string Team { get; set; }
         public IEnumerable<People> ExcludedNominees { get; set; }
 
         public bool Equals(Participant participant)

@@ -75,14 +75,7 @@ namespace SecretSantaApp.Business
             }
             return cleanParticipantsList;
         }
-
-        private void GetPotentialNomineeForAParticipant(IEnumerable<Participant> participants, Participant currentParticipant)
-        {
-            var participantsExceptCurrentParticipant = RemoveCurrentParticipantFromPotentialGifted(participants, currentParticipant);
-            
-            currentParticipant.PotentialNominees = RemoveParticipantsInCurrentParticipantExclusionList(participantsExceptCurrentParticipant, currentParticipant);
-        }
-
+        
         private IEnumerable<Participant> RemoveCurrentParticipantFromPotentialGifted(IEnumerable<Participant> participants, Participant currentParticipant)
         {
             var participantsExceptCurrentOne = new List<Participant>();
@@ -116,21 +109,6 @@ namespace SecretSantaApp.Business
             }         
             return participantsWithoutCurrentParticipantExcludedOne;
         } 
-
-        private IEnumerable<Participant> RemovePotentialNomineesFromSameTeam(Participant currentParticipant)
-        {
-            var potentialNomineesNotInSameTeam = new List<Participant>();
-
-            foreach(var nominee in currentParticipant.PotentialNominees)
-            {
-                if (nominee.Team != currentParticipant.Team)
-                {
-                    potentialNomineesNotInSameTeam.Add(nominee);
-                }
-            }
-
-            return potentialNomineesNotInSameTeam;
-        }
 
         private IEnumerable<Participant> RemovePotentialNomineesFromSelectedGifterTeam(IEnumerable<Participant> participants, Participant currentParticipant)
         {
