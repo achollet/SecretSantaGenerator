@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using SecretSantaApp.Model;
 using SecretSantaApp.Business;
+using System.Net.Mail;
+using System.Net;
 
 namespace SecretSantaApp
 {
@@ -11,15 +13,23 @@ namespace SecretSantaApp
         static void Main(string[] args)
         {
             var secretSantaPaticipantsAssociation = new SecretSantaPaticipantsAssociation();
-            
+            var secretSantaEmailBuilder = new SecretSantaEmailBuilder();
             //TODO : Retrieve the configuration and the list of participants from a .json file
-            var path = @"./SecretSanta.json"; 
-            var json = new JsonFileLoader().GetDataFromFile(path);
+            //var path = @"./SecretSanta.json"; 
+            //var json = new JsonFileLoader().GetDataFromFile(path);
 
             var config = new Configuration
             {
                 MaxAmount = 10,
-                EmailAddress = "SecretSantaCheckout@gmail.com"
+                DeliveryDate = "21 Janvier 2018",
+                EmailSettings = new EmailSettings{
+                    SmtpServer = "smtpserver",
+                    EmailUserName = "username",
+                    EmailPassword = "password",
+                    EmailAddress ="SecretSantaCheckout@gmail.com", 
+                    EmailSubject = "Secret Santa du Checkout",
+                    EmailBody = "Tu es le Secret Santa de <b>{0} </b>.\n Le cadeau que tu lui offriras ne doit pas dépasser une valeur de <b>{1}\u20AC</b> (frais de port non-inclus).\n La remise du cadeau se fera le <b>{2}</b>. \n\n Oh oh oh! \n Joyeux Noël!"
+                }
             };
 
             var participants = new List<Participant>
@@ -34,20 +44,9 @@ namespace SecretSantaApp
             var gifters  = secretSantaPaticipantsAssociation.RemoveDuplicateParticipants(participants);
             var secretSantaSelection = secretSantaPaticipantsAssociation.AssociateParticipantsTogether(gifters);
             
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("Associtation gifter-gifted terminated");
-            Console.WriteLine("-------------------------------------");
-
-            foreach(var gifterGiftedPair in secretSantaSelection)
-            {
-                Console.WriteLine(String.Format("{0} {1} offers a gift to {2} {3} of a maximum value of {4}", gifterGiftedPair.Key.FirstName, gifterGiftedPair.Key.LastName, gifterGiftedPair.Value.FirstName, gifterGiftedPair.Value.LastName, config.MaxAmount));
-            }
-
-            //var path = @"./SecretSanta.json"; 
+            // Email part
+            secretSantaEmailBuilder.BuildAndSendEmail(config, secretSantaSelection);
             
-            //var json = new JsonFileLoader().GetDataFromFile(path);
-
-            //var config = JsonConvert.DeserializeObject<Configuration>(json);
             Console.ReadLine();
         }
     }

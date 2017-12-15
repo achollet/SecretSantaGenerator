@@ -6,8 +6,7 @@ namespace SecretSantaApp.Model
     {
         [JsonPropertyAttribute("MaxAmount")]
         public int MaxAmount { get; set; }
-
-        [JsonPropertyAttribute("SenderEmailAddress")]
-        public string EmailAddress { get; set; }
+        public string DeliveryDate { get; set; }
+        public EmailSettings EmailSettings { get; set; }
     }
 }
