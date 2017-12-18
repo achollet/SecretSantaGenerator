@@ -1,18 +1,15 @@
 # Santa Project Generator
 
-This Console App has been develloped to generate anominously and randomly a Secret Santa based on a list of participants. 
+This Console App has been develloped to generate anominously and randomly a Secret Santa based on a list of participants. After pairing participants together, it will send an email explaining who is the person that will recieve the gift, how much to put in the gift (maximum) and the due date.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To develop and test this app, just fork the project. Once you've cloned it on your machine, fill the SecretSanta.json file with informations needed to run the app.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This application has been developp using .Net Core 2.0.
 
-```
-Give examples
-```
 
 ### Installing
 
@@ -34,47 +31,15 @@ End with an example of getting some data out of the system or using it for a lit
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
 
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
 
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Chollet Alexis** - *Initial work* - [achollet](https://github.com/achollet)
 
 ## License
 
@@ -82,6 +47,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* A Job interview at Serensia : it was the subject of the technical test.
