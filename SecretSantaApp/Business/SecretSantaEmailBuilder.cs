@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
 using SecretSantaApp.Model;
 
 namespace SecretSantaApp.Business
 {
     public class SecretSantaEmailBuilder
     {
-        public void BuildAndSendEmail(Configuration config, IDictionary<Participant, People> secretSantas)
+        public void BuildAndSendEmail(Configuration config, IDictionary<Participant, Participant> secretSantas)
         {              
             var emailSettings = config.EmailSettings;
             var smtpClient = new SmtpClient(emailSettings.SmtpServer);
+            smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
             smtpClient.Credentials = new NetworkCredential(emailSettings.EmailUserName, emailSettings.EmailPassword);
 
@@ -32,23 +34,14 @@ namespace SecretSantaApp.Business
                 mailMessage.BodyEncoding = System.Text.Encoding.UTF8;
                 mailMessage.IsBodyHtml = true;
 
-                // Console.WriteLine(String.Format("From : {0}", mailMessage.From));
-                // Console.WriteLine(String.Format("To : {0}", mailMessage.To.ToString()));
-                // Console.WriteLine(String.Format("Subject : {0}", mailMessage.Subject));
-                // Console.WriteLine(String.Format("Body : {0}", mailMessage.Body));
-
-                // Console.WriteLine();
-                // Console.WriteLine("---------------------------------------------------");
-                // Console.WriteLine();
-
-                //try 
-                //{
-                //  smtpClient.Send(mailMessage);
-                //}
-                //catch (SmtpException e)
-                //{
-                //  Console.WriteLine("\t /!\\ Error: {0}", e.StatusCode);
-                //}
+                try 
+                {
+                    smtpClient.Send(mailMessage);
+                }
+                catch (SmtpException e)
+                {
+                 Console.WriteLine("\t /!\\ Error: {0}", e.StatusCode);
+                }
 
                 index ++;
             }
