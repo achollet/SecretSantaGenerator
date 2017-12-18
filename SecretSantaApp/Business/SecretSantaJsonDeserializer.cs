@@ -15,7 +15,7 @@ namespace SecretSantaApp.Business
                 MaxAmount = (int)jObject["configuration"]["MaxAmount"],
                 DeliveryDate = (string)jObject["configuration"]["DeliveryDate"]
             };
-            
+
             var emailSetting = new EmailSettings()
             {
                 SmtpServer = (string)jObject["configuration"]["EmailSettings"]["SmtpServer"],
@@ -36,34 +36,69 @@ namespace SecretSantaApp.Business
             var jObject = JObject.Parse(json);
             var jArray = (JArray)jObject["participants"];
 
-            foreach(var jToken in jArray)
+            if (jArray != null)
             {
-                var participant = new Participant
+                foreach (var jToken in jArray)
                 {
-                    FirstName = (string)jToken["FirstName"],
-                    LastName = (string)jToken["LastName"],
-                    EmailAddress = (string)jToken["EmailAddress"],
-                    Team = (string)jToken["Team"]
-                };
+                    var participant = new Participant();
 
-                var jArrayExcludedNomminee = (JArray)jToken["ExcludedNominees"];
-                if (jArrayExcludedNomminee != null)
-                {
-                    var excludedNominees = new List<People>();
-
-                    foreach(var excludedNomminee in jArrayExcludedNomminee)
+                    if ((string)jToken["FirstName"] != null)
                     {
-                        var people = new People
-                        {
-                            FirstName = (string)excludedNomminee["FirstName"],
-                            LastName = (string)excludedNomminee["LastName"]
-                        };
-                        excludedNominees.Add(people);
+                        participant.FirstName = (string)jToken["FirstName"];
                     }
-                    participant.ExcludedNominees = excludedNominees;
+
+                    if ((string)jToken["LastName"] != null)
+                    {
+                        participant.LastName = (string)jToken["LastName"];
+                    }
+
+                    if ((string)jToken["EmailAddress"] != null)
+                    {
+                        participant.EmailAddress = (string)jToken["EmailAddress"];
                 }
 
-                participants.Add(participant);
+                    if ((string)jToken["Team"] != null)
+                    {
+                        participant.Team = (string)jToken["Team"];
+                    }
+
+
+                    var jArrayExcludedNomminee = (JArray)jToken["ExcludedNominees"];
+                    if (jArrayExcludedNomminee != null)
+                    {
+                        var excludedNominees = new List<People>();
+
+                        foreach (var excludedNomminee in jArrayExcludedNomminee)
+                        {
+                            var people = new People();
+
+                            if ((string)jToken["FirstName"] != null)
+                            {
+                                people.FirstName = (string)excludedNomminee["FirstName"];
+                            }
+
+                            if ((string)jToken["LastName"] != null)
+                            {
+                                people.LastName = (string)excludedNomminee["LastName"];
+                            }
+
+                            
+                            if ((people.FirstName != null || people.FirstName != string.Empty) ||
+                                people.LastName != null)
+                            {
+                                excludedNominees.Add(people);
+                            }
+                        }
+                        participant.ExcludedNominees = excludedNominees;
+                    }
+
+                    // On n'ajoute aux participants que ceux ayant une adress email et un prénom.
+                    if ((participant.FirstName != null || participant.FirstName != string.Empty) &&
+                        (participant.EmailAddress != null || participant.EmailAddress != string.Empty))
+                    {
+                        participants.Add(participant);
+                    }
+                }
             }
 
             return participants;

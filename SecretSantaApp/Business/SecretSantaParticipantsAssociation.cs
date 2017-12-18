@@ -15,6 +15,7 @@ namespace SecretSantaApp.Business
 
             while(potentialNominees.Any() && gifters.Any())
             {
+                Console.WriteLine(String.Format("\t\t {0}/{1} participant(s) associated", (participants.Count()-gifters.Count).ToString(), participants.Count().ToString()));
                 var randomIndexForGifter = new Random().Next(gifters.Count);
                 var selectedGifter = gifters.ElementAt(randomIndexForGifter);
 
@@ -82,8 +83,8 @@ namespace SecretSantaApp.Business
             foreach(var participant in participants)
             {
                 if (participant.FirstName != currentParticipant.FirstName && 
-                    participant.LastName != currentParticipant.LastName && 
-                    participant.EmailAddress != currentParticipant.EmailAddress)
+                    participant.LastName != currentParticipant.LastName )
+                    //&& participant.EmailAddress != currentParticipant.EmailAddress)
                 {
                     participantsExceptCurrentOne.Add(participant);
                 }

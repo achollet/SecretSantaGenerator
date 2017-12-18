@@ -16,28 +16,28 @@ namespace SecretSantaApp
             var secretSantaPaticipantsAssociation = new SecretSantaPaticipantsAssociation();
             var secretSantaEmailBuilder = new SecretSantaEmailBuilder();
 
+            Console.WriteLine("*****************************************************");
+            Console.WriteLine("Retrieving SecretSanta.json file");
+                
             var path = @"./SecretSanta.json"; 
             var json = new JsonFileLoader().GetDataFromFile(path);
 
+            Console.WriteLine("\t Deserializing the configuration properties");
             var config = secretSantaJsonDeserializer.GetConfiguration(json);
 
+            Console.WriteLine("\t Deserializing participants List");
             var participants = secretSantaJsonDeserializer.GetParticipants(json);
 
-            // participants = new List<Participant>
-            // {
-            //     new Participant{LastName = "Morningstar", FirstName = "Lucifer", EmailAddress = "LuciferMorningstar@gmail.com", Team = "2" },
-            //     new Participant{LastName = "Prinkster", FirstName = "Joanna", EmailAddress = "JoannaPrinkster@gmail.com", Team = "1" },
-            //     new Participant{LastName = "Duch", FirstName = "Dan", EmailAddress = "DanDush@gmail.com", Team = "3" },
-            //     new Participant{LastName = "", FirstName = "Amenedial", EmailAddress = "Amenedial@gmail.com", Team = "1", ExcludedNominees = new List<People>{new People { FirstName = "Lucifer", LastName = "Morningstar"} }},
-            //     new Participant{LastName = "", FirstName = "Amenedial", EmailAddress = "Amenedial@gmail.com", Team = "1", ExcludedNominees = new List<People>{new People { FirstName = "Lucifer", LastName = "Morningstar"} }}
-            // };
-
+            Console.WriteLine("\n\t Shuffling and association gifter/gifted :");
             var gifters  = secretSantaPaticipantsAssociation.RemoveDuplicateParticipants(participants);
             var secretSantaSelection = secretSantaPaticipantsAssociation.AssociateParticipantsTogether(gifters);
             
             // Email part
+            Console.WriteLine("\n\t Sending emails :");  
             secretSantaEmailBuilder.BuildAndSendEmail(config, secretSantaSelection);
             
+            Console.WriteLine("Secret Santa Shuffle Emailing terminated");
+            Console.WriteLine("*****************************************************");
             Console.ReadLine();
         }
     }

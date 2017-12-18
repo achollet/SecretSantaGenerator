@@ -6,7 +6,7 @@ namespace SecretSantaApp.Business
     {
         public string GetDataFromFile(string path)
         {
-            var errorMessage = string.Format("Sorry the {0} file does not exist !", path);
+            var errorMessage = string.Format("\t /!\\ Sorry the {0} file does not exist !", path);
             
             var fileExists = File.Exists(path);
             
