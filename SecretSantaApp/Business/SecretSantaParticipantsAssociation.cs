@@ -20,7 +20,7 @@ namespace SecretSantaApp.Business
                 var selectedGifter = gifters.ElementAt(randomIndexForGifter);
 
                 var potentialNomineesForSelectedGifter = RemoveCurrentParticipantFromPotentialGifted(potentialNominees, selectedGifter);
-                var potentialNomineesNotExcluded = RemoveParticipantsInCurrentParticipantExclusionList(potentialNomineesForSelectedGifter, selectedGifter).ToList();
+                var potentialNomineesNotExcluded = RemoveParticipantsInCurrentParticipantExclusionList(potentialNomineesForSelectedGifter, selectedGifter).ToList();                
                 var potentialNomineesNotInSameTeam = RemovePotentialNomineesFromSelectedGifterTeam(potentialNomineesNotExcluded, selectedGifter).ToList();
 
                 var nominee = new Participant();
@@ -90,7 +90,7 @@ namespace SecretSantaApp.Business
             return participantsExceptCurrentOne;
         }
 
-        private List<Participant> RemoveParticipantsInCurrentParticipantExclusionList(IEnumerable<Participant> participants, Participant currentParticipant)
+        private IEnumerable<Participant> RemoveParticipantsInCurrentParticipantExclusionList(IEnumerable<Participant> participants, Participant currentParticipant)
         {
             if (currentParticipant.ExcludedNominees == null || !currentParticipant.ExcludedNominees.Any())
             {
@@ -112,6 +112,11 @@ namespace SecretSantaApp.Business
         private IEnumerable<Participant> RemovePotentialNomineesFromSelectedGifterTeam(IEnumerable<Participant> participants, Participant currentParticipant)
         {
             var participantsNotInTeam = new List<Participant>();
+
+            if (currentParticipant.Team == null || currentParticipant.Team == string.Empty)
+            {
+                return participants;
+            }
 
             foreach (var participant in participants)
             {
