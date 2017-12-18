@@ -1,6 +1,6 @@
 # Santa Project Generator
 
-One Paragraph of project description goes here
+This Console App has been develloped to generate anominously and randomly a Secret Santa based on a list of participants. 
 
 ## Getting Started
 
