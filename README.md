@@ -10,26 +10,45 @@ To develop and test this app, just fork the project. Once you've cloned it on yo
 
 This application has been developp using .Net Core 2.0.
 
-
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+To run properly this app needs the SecretSanta.json file filled with some mandatory informations. This file is structured as follow :
 
 ```
-Give the example
+{
+  "configuration" : {...},
+  "participants" : [{...}]
+}
+```
+The configuration object is self-explainatory and will contains any informations regarding the general functioning of the app. It will contains values of **maximum amount** to spend and **due date**, 
+
+```
+{
+  "configuration" : {
+    "MaxAmount" : 10,
+    "DeliveryDate" : "2018, January the 10th",
+    "EmailSettings" : {}
+    }
+}
 ```
 
-And repeat
+but also settings needed to send e-mails, all fields are mandatory :
 
 ```
-until finished
+"EmailSettings" : {
+            "SmtpServer" : "",
+            "EmailUserName" : "",
+            "EmailPassword" : "",
+            "EmailAddress" :"", 
+            "EmailSubject" : "",
+            "EmailBody" : "whatever you want to say in the email."
+        }
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+The e-mail body is the core of the message and can be html + embeded css code to add some style at the email.
 
 ## Running the tests
+
 
 
 
