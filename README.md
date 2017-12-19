@@ -1,80 +1,123 @@
 # Santa Project Generator
 
-One Paragraph of project description goes here
+This Console App has been develloped to generate anominously and randomly a Secret Santa based on a list of participants. After pairing participants together, it will send an email explaining who is the person that will recieve the gift, how much to put in the gift (maximum) and the due date.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+To develop and test this app, just fork the project. Once you've cloned it on your machine, fill the SecretSanta.json file with informations needed to run the app.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
+This application has been developp using .Net Core 2.0.
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
+#### SecretSanta.json file 
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+To run properly this app needs the SecretSanta.json file filled with some mandatory informations. This file is structured as follow :
 
 ```
-until finished
+{
+  "configuration" : {...},
+  "participants" : [{...}]
+}
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+##### configuration info
+
+The configuration object is self-explainatory and will contains any informations regarding the general functioning of the app. It will contains values of **maximum amount** to spend and **due date**, 
+
+```
+{
+  "configuration" : {
+    "MaxAmount" : 10,
+    "DeliveryDate" : "2018, January the 10th",
+    "EmailSettings" : {}
+    }
+}
+```
+
+but also settings needed to send e-mails, all fields are mandatory :
+
+```
+"EmailSettings" : {
+            "SmtpServer" : "",
+            "EmailUserName" : "",
+            "EmailPassword" : "",
+            "EmailAddress" :"", 
+            "EmailSubject" : "",
+            "EmailBody" : "whatever you want to say in the email."
+        }
+```
+
+The e-mail body is the core of the message and can be html + embeded css code to add some style at the email.
+
+##### participants list
+
+A participant is defined by 5 fields, **FirstName**, **LastName** and **EmailAddress** that are **mandatory** and need to be unique and 2 optionals fields, **Team** and **ExcludedNominees**.
+
+```
+{
+  "FirstName" : "John", 
+  "LastName" : "Doe" , 
+  "Team" : "Red", 
+  "EmailAddress" : "SecretSanta.Checkout@gmail.com",
+  "ExcludedNominees" : [{...}]
+  }
+```
+
+**ExcludedNominee** is a list of people with which the participant can't be associated and has the following structure :
+
+```
+ExcludedNominees : [{FirstName = "People1", LastName = "People1"},
+                    {FirstName = "People12", LastName = "People2"}]
+```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+:warning: In order to run test you need to change some part of the code in *SecretSantaPaticipantsAssociation.cs* at line 83 :
 
-### Break down into end to end tests
+``` 
+if (participant.FirstName != currentParticipant.FirstName &&
+    participant.LastName != currentParticipant.LastName   && 
+    participant.EmailAddress != currentParticipant.EmailAddress && 
+    participant.Team != currentParticipant.Team)
+```
+should be replace by 
+``` 
+if (participant.FirstName != currentParticipant.FirstName &&
+    participant.LastName != currentParticipant.LastName)
+```
+To allow to have the same email address for all participants. 
 
-Explain what these tests test and why
+### Expected output 
 
 ```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+**************************************************************
+Retrieving SecretSanta.json file
+          Deserializing configuration properties
+          Deserializing participants list
+          
+          Shuffling and association gifter/gifted :
+                  1/3 participant(s) associated
+                  2/3 participant(s) associated
+                  3/3 participant(s) associated
+          
+          Sending emails :
+                  email 1/3
+                  email 2/3
+                  email 3/3
+Secret Santa Shuffle Emailing terminated
+**************************************************************
 ```
 
 ## Deployment
 
 Add additional notes about how to deploy this on a live system
 
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Chollet Alexis** - *Initial work* - [achollet](https://github.com/achollet)
 
 ## License
 
@@ -82,6 +125,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* A Job interview at Serensia : it was the subject of the technical test.
