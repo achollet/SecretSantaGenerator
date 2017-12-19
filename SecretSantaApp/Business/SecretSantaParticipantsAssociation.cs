@@ -81,8 +81,9 @@ namespace SecretSantaApp.Business
             foreach (var participant in participants)
             {
                 if (participant.FirstName != currentParticipant.FirstName &&
-                    participant.LastName != currentParticipant.LastName)
-                //&& participant.EmailAddress != currentParticipant.EmailAddress && participant.Team != currentParticipant.Team)
+                    participant.LastName != currentParticipant.LastName && 
+                    participant.EmailAddress != currentParticipant.EmailAddress && 
+                    participant.Team != currentParticipant.Team)
                 {
                     participantsExceptCurrentOne.Add(participant);
                 }

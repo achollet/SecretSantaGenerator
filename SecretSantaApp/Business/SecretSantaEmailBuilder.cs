@@ -28,7 +28,7 @@ namespace SecretSantaApp.Business
                 {
                     From = new MailAddress(emailSettings.EmailAddress),
                     Subject = emailSettings.EmailSubject,
-                    Body = String.Format(emailSettings.EmailBody, giftedName, config.MaxAmount, config.DeliveryDate) 
+                    Body = String.Format(emailSettings.EmailBody, gifterGifted.Key.FirstName, giftedName, config.MaxAmount, config.DeliveryDate) 
                 };
                 mailMessage.To.Add(gifterGifted.Key.EmailAddress);
                 mailMessage.BodyEncoding = System.Text.Encoding.UTF8;
