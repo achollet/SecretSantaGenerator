@@ -21,7 +21,7 @@ namespace SecretSantaApp.Business
 
             foreach(var gifterGifted in secretSantas)
             { 
-                Console.WriteLine(String.Format("\t\t email {0}/{1}", index.ToString(), secretSantas.Count.ToString()));
+                Console.WriteLine(String.Format("\t\t email {0}/{1} send to {2}", index.ToString(), secretSantas.Count.ToString(), gifterGifted.Key.FirstName));
 
                 var giftedName = String.Format("{0} {1}", gifterGifted.Value.FirstName, gifterGifted.Value.LastName).TrimEnd();
                 var mailMessage = new MailMessage

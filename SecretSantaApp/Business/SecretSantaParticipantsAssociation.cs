@@ -15,7 +15,6 @@ namespace SecretSantaApp.Business
 
             while (potentialNominees.Any() && gifters.Any())
             {
-                Console.WriteLine(String.Format("\t\t {0}/{1} participant(s) associated", (participants.Count() - gifters.Count + 1).ToString(), participants.Count().ToString()));
                 var randomIndexForGifter = new Random().Next(gifters.Count);
                 var selectedGifter = gifters.ElementAt(randomIndexForGifter);
 
@@ -53,6 +52,7 @@ namespace SecretSantaApp.Business
                     secretSantaSelection.Add(selectedGifter, nominee);
                     gifters.Remove(selectedGifter);
                     potentialNominees.Remove(nominee);
+                    Console.WriteLine(String.Format("\t\t {0}/{1} participant(s) associated", (participants.Count() - gifters.Count).ToString(), participants.Count().ToString()));
                 }
             }
 
