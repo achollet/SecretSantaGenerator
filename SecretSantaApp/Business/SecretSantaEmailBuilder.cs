@@ -23,7 +23,7 @@ namespace SecretSantaApp.Business
             { 
                 Console.WriteLine(String.Format("\t\t email {0}/{1} send to {2}", index.ToString(), secretSantas.Count.ToString(), gifterGifted.Key.FirstName));
 
-                var giftedName = String.Format("{0} {1}", gifterGifted.Value.FirstName, gifterGifted.Value.LastName).TrimEnd();
+                var giftedName = string.IsNullOrEmpty(gifterGifted.Value.Team) ? gifterGifted.Value.FirstName : String.Format("{0} (de l'equipe {1})", gifterGifted.Value.FirstName, gifterGifted.Value.Team).TrimEnd();
                 var mailMessage = new MailMessage
                 {
                     From = new MailAddress(emailSettings.EmailAddress),
